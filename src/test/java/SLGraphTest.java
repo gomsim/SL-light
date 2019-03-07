@@ -29,9 +29,57 @@ class SLGraphTest {
         //Add stop where T and B cross
         testGraph.addStop("X1",22,7);
 
-        //Add all departures on B-line
+        //Add all departures on T-Line
+        //Add all Southgoing departures on T-Line
+        for(int i = 12; i < 1396;){
+            int departure = i;
+            int arrival = i+3;
+            testGraph.connect("T1","T2", departure, arrival, "Trainline S");
+            departure = arrival;
+            arrival = departure+8;
+            testGraph.connect("T2","T3", departure, arrival, "Trainline S");
+            departure = arrival;
+            arrival = departure+1;
+            testGraph.connect("T3","X1", departure, arrival, "Trainline S");
+            departure = arrival;
+            arrival = departure+6;
+            testGraph.connect("X1","T4", departure, arrival, "Trainline S");
+            departure = arrival;
+            arrival = departure+11;
+            testGraph.connect("T4","T5", departure, arrival, "Trainline S");
+            departure = arrival;
+            arrival = departure+3;
+            testGraph.connect("T5","T6", departure, arrival, "Trainline S");
+            departure = arrival;
+            arrival = departure+12;
+            testGraph.connect("T6","T7", departure, arrival, "Trainline S");
+        }
 
-        //String start, String dest, int depTime, int arrTime, String line
+        //Add all Northgoing departures on T-Line
+        for(int i = 12; i < 1396;){
+            int departure = i;
+            int arrival = i+12;
+            testGraph.connect("T7","T6", departure, arrival, "Trainline N");
+            departure = arrival;
+            arrival = departure+3;
+            testGraph.connect("T6","T5", departure, arrival, "Trainline N");
+            departure = arrival;
+            arrival = departure+11;
+            testGraph.connect("T5","T4", departure, arrival, "Trainline N");
+            departure = arrival;
+            arrival = departure+6;
+            testGraph.connect("T4","X1", departure, arrival, "Trainline N");
+            departure = arrival;
+            arrival = departure+1;
+            testGraph.connect("X1","T3", departure, arrival, "Trainline N");
+            departure = arrival;
+            arrival = departure+8;
+            testGraph.connect("T3","T2", departure, arrival, "Trainline N");
+            departure = arrival;
+            arrival = departure+3;
+            testGraph.connect("T2","T1", departure, arrival, "Trainline N");
+        }
+        //Add all departures on B-line
         //Add all Eastgoing departures on B-line
         for(int i = 10; i < 1393; ){
             int departure = i;
