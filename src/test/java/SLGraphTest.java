@@ -42,7 +42,7 @@ class SLGraphTest {
             arrival = departure+1;
             testGraph.connect("T3","X1", departure, arrival, "Trainline S");
             departure = arrival;
-            arrival = departure+6;
+            arrival = departure+7;
             testGraph.connect("X1","T4", departure, arrival, "Trainline S");
             departure = arrival;
             arrival = departure+11;
@@ -53,10 +53,11 @@ class SLGraphTest {
             departure = arrival;
             arrival = departure+12;
             testGraph.connect("T6","T7", departure, arrival, "Trainline S");
+            i = i+6;
         }
 
         //Add all Northgoing departures on T-Line
-        for(int i = 12; i < 1396;){
+        for(int i = 6; i < 1396;){
             int departure = i;
             int arrival = i+12;
             testGraph.connect("T7","T6", departure, arrival, "Trainline N");
@@ -73,11 +74,12 @@ class SLGraphTest {
             arrival = departure+1;
             testGraph.connect("X1","T3", departure, arrival, "Trainline N");
             departure = arrival;
-            arrival = departure+8;
+            arrival = departure+10;
             testGraph.connect("T3","T2", departure, arrival, "Trainline N");
             departure = arrival;
             arrival = departure+3;
             testGraph.connect("T2","T1", departure, arrival, "Trainline N");
+            i = i+6;
         }
         //Add all departures on B-line
         //Add all Eastgoing departures on B-line
@@ -125,9 +127,12 @@ class SLGraphTest {
     }
 
     @Test
-    void test() {
-        System.out.println(testGraph.toString());
-        assertEquals(true,true);
+    void testFindRoute() {
+        testGraph.connect("B3", "T4", (7*60)+11, (7*60)+11+19, "TestLine");
+        System.out.println(testGraph.findRoute("B1", "T7", 60*7));
+
+        System.out.println(testGraph.findRoute("B1", "B5", 0));
+        assertEquals(true,false);
             /* Test */
     }
 }

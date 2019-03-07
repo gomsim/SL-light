@@ -35,25 +35,29 @@ public class SLGraph {
     public List<Departure> findRoute(String start, String dest, int time){
         PriorityQueue<AStarEntry> queue = new PriorityQueue<>();
         HashSet<Stop> visited = new HashSet<>();
-        AStarEntry current = new AStarEntry(0, new Departure("Start",null,graph.get(start),time,time), null);
+        AStarEntry current = new AStarEntry(0, new Departure("Start",null,graph.get(start),time,time), null, 0);
         queue.add(current);
-        visited.add(current.departure.getNext());
+        //visited.add(current.departure.getNext());
 
         while (!queue.isEmpty() && !current.departure.getNext().equals(graph.get(dest))){
-            current = queue.poll();
+            do {
+                current = queue.poll();
+            }while (visited.contains(current.departure.getNext()));
+            visited.add(current.departure.getNext());
             System.out.println("\nAt: " + current);
             for (Map.Entry<Integer,Departure> dep: current.departure.getNext().getDepartures().tailMap(current.departure.getArrivalTime()).entrySet()){
                 Stop to = dep.getValue().getNext();
                 if (dep.getKey() - current.departure.getArrivalTime() > MAX_WAIT_TIME)
                     break;
                 if (!visited.contains(to)) {
-                    int weight = heuristic(to,graph.get(dest)) +
-                            dep.getValue().getCost(dep.getKey()) +
+                    int costSoFar = dep.getValue().getCost(dep.getKey()) +
                             (dep.getKey()-current.departure.getArrivalTime() +
-                                    current.cost);
-                    System.out.print("("+weight + " to " + dep.getValue().getNext() + ") ");
-                    queue.add(new AStarEntry(weight,dep.getValue(), current));
-                    visited.add(dep.getValue().getNext());
+                                    current.costSoFar);
+                    int priorityCost = heuristic(to,graph.get(dest)) +
+                            costSoFar;
+                    System.out.print("("+priorityCost + " " + costSoFar + " to " + dep.getValue().getNext() + ") ");
+                    queue.add(new AStarEntry(priorityCost,dep.getValue(), current, costSoFar));
+                    //visited.add(dep.getValue().getNext());
                 }
             }
         }
@@ -74,18 +78,19 @@ public class SLGraph {
 
     private class AStarEntry implements Comparable<AStarEntry>{
 
-        int cost;
+        int priorityCost, costSoFar;
         Departure departure;
         AStarEntry path;
 
-        public AStarEntry(int cost, Departure departure, AStarEntry path){
-            this.cost = cost;
+        public AStarEntry(int priorityCost, Departure departure, AStarEntry path, int costSoFar){
+            this.priorityCost = priorityCost;
+            this.costSoFar = costSoFar;
             this.departure = departure;
             this.path = path;
         }
 
         public int compareTo(AStarEntry other){
-            return cost - other.cost;
+            return priorityCost - other.priorityCost;
         }
         public String toString(){
             return departure.getNext().toString();

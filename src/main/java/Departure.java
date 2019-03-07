@@ -27,6 +27,6 @@ public class Departure {
         return from;
     }
     public String toString(){
-        return line + ":" + departureTime + "->" + next;
+        return line + ":" + departureTime/60 + ":" + (departureTime%60 < 10? "0"+departureTime%60: departureTime%60) + "->" + next;
     }
 }
