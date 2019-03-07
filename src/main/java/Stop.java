@@ -24,8 +24,18 @@ public class Stop {
         return y;
     }
 
-    public Map<Integer, Departure> getDepartures() {
+    public TreeMap<Integer, Departure> getDepartures() {
         return departures;
+    }
+
+    public int hashCode(){
+        return name.hashCode();
+    }
+    public boolean equals(Object other){
+        if (!(other instanceof Stop))
+            return false;
+        Stop otherStop = (Stop)other;
+        return otherStop.name.equals(name);
     }
 
     public boolean addDeparture(int departTime, Departure d) {
@@ -45,7 +55,7 @@ public class Stop {
     }
 
     public String toString(){
-        return departures.toString();
+        return name;
     }
 
 }
