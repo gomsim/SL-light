@@ -3,24 +3,17 @@ import java.util.TreeMap;
 
 public class Stop {
     private String name;
-    private int id;
     private double x,y;
     private TreeMap<Integer, Departure> departures = new TreeMap<>();
 
-    public Stop(String name, int id, double x, double y){
+    public Stop(String name, double x, double y){
         this.name = name;
-
-        this.id = id;
         this.x = x;
         this.y = y;
     }
 
     public String getName() {
         return name;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public double getX() {
@@ -35,8 +28,17 @@ public class Stop {
         return departures;
     }
 
-    public void addDeparture(int departTime, Departure d) {
+    public boolean addDeparture(int departTime, Departure d) {
+        if (departures.containsValue(d))
+            return false;
         departures.put(departTime,d);
+        return true;
+    }
+    public boolean removeDeparture(String destination, int departTime){
+        if (!departures.containsKey(departTime))
+            return false;
+        departures.remove(departTime);
+        return true;
     }
     public Departure getNextDeparture(int arrivalTime){
         return departures.ceilingEntry(arrivalTime).getValue();
