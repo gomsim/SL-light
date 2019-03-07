@@ -12,4 +12,7 @@ public class Departure {
     public int getCost(int departureTime){
         return arrivalTime - departureTime;
     }
+    public String toString(){
+        return line;
+    }
 }

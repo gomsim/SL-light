@@ -28,7 +28,15 @@ public class SLGraph {
             return false;
         return graph.get(start).removeDeparture(dest, depTime);
     }
+    private int heuristic(Stop goal, Stop next){
+        return (int)Math.sqrt(Math.pow(Math.abs(goal.getX()-next.getX()),2) + Math.pow(Math.abs(goal.getY()-next.getY()),2));
+
+    }
     public List<Stop> findRoute(String start, String dest, int time){
         return null;
+    }
+
+    public String toString(){
+        return graph.toString();
     }
 }

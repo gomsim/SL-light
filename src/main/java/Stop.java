@@ -44,4 +44,8 @@ public class Stop {
         return departures.ceilingEntry(arrivalTime).getValue();
     }
 
+    public String toString(){
+        return departures.toString();
+    }
+
 }
