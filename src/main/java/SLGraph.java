@@ -53,14 +53,13 @@ public class SLGraph {
     /**
      * Remove a Departure (edge) between two Stops (nodes).
      * @param start node of the edge to be removed.
-     * @param dest-node of the edge to be removed.
      * @param depTime of the node to be removed.
-     * @return true if Departure is removed, false if graph does not contain the Departure.
+     * @return true if departure is removed, false if graph does not contain the departure.
      */
-    public boolean disconnect(String start, String dest, int depTime){
+    public boolean disconnect(String start, int depTime){
         if (!graph.containsKey(start))
             return false;
-        return graph.get(start).removeDeparture(dest, depTime);
+        return graph.get(start).removeDeparture(depTime);
     }
 
     /**
