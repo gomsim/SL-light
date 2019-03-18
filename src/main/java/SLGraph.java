@@ -10,36 +10,78 @@ public class SLGraph {
     HashMap<String, Stop> graph = new HashMap<String, Stop>();
     private static final int MAX_WAIT_TIME = 60;
 
+    /**
+     * Add a Stop-object as a node in the graph.
+     * @param name of the stop in readable format, used as key in the Graph HashMap.
+     * @param x coordinate of the stops location in the real world.
+     * @param y coordinate of the stops location in the real world.
+     * @return true if Stop is added to the graph, false if the graph contains the Stop.
+     */
     public boolean addStop(String name, int x, int y){
         if (graph.containsKey(name))
             return false;
         graph.put(name, new Stop(name,x,y));
         return true;
     }
+
+    /**
+     * Remove Stop (node) from graph.
+     * @param name of the Stop to be removed.
+     * @return true if Stop is removed, false if graph does not contain the Stop.
+     */
     public Stop remove(String name){
         return graph.remove(name);
     }
+
+    /**
+     * Connects two Stops (nodes) with a Departure (edge).
+     * @param type of transportation. Bus, Train, Tram.
+     * @param start node of the new edge.
+     * @param dest-node of the new edge.
+     * @param depTime from the start node.
+     * @param arrTime to the destionation node.
+     * @param line name of the line this departure appears along.
+     * @return true if the two Stops are connected, false if one of the Stops does not exist in the graph.
+     */
     public boolean connect(Departure.TransportType type, String start, String dest, int depTime, int arrTime, String line){
         if (!graph.containsKey(start) || !graph.containsKey(dest))
             return false;
-        return graph.get(start).addDeparture(depTime,new Departure(type, line,graph.get(start),graph.get(dest),depTime, arrTime));
+        graph.get(start).addDeparture(depTime,new Departure(type, line,graph.get(start),graph.get(dest),depTime, arrTime));
+        return true;
     }
+
+    /**
+     * Remove a Departure (edge) between two Stops (nodes).
+     * @param start node of the edge to be removed.
+     * @param dest-node of the edge to be removed.
+     * @param depTime of the node to be removed.
+     * @return true if Departure is removed, false if graph does not contain the Departure.
+     */
     public boolean disconnect(String start, String dest, int depTime){
         if (!graph.containsKey(start))
             return false;
         return graph.get(start).removeDeparture(dest, depTime);
     }
+
+    /**
+     * Calculates the heuristic cost used by A* algorithm.
+     * Using pythagoras theorem to find the linear distance between a stop and the goal of the journey multiplied by the speed of the current transport.
+     * @param dep-edge between the current evaluated node and the next node to evaluate.
+     * @param goal-node of the trip.
+     * @param next node to evaluate in the shortest path algorithm.
+     * @return heuristic cost.
+     */
     private int heuristic(Departure dep, Stop goal, Stop next){
         return (int)(Math.sqrt(Math.pow(Math.abs(goal.getX()-next.getX()),2) + Math.pow(Math.abs(goal.getY()-next.getY()),2)) * dep.getType().speed);
 
     }
 
     /**
-     *
-     * @param start
-     * @param dest
-     * @param time
-     * @return
+     * Find the shortest route in the public transportation graph using an A* algorithm.
+     * @param start node of the journey.
+     * @param dest-node of the journey.
+     * @param time when the journey starts.
+     * @return a LinkedList of departures detailing the journey.
      */
     public LinkedList<Departure> findRoute(String start, String dest, int time){
         PriorityQueue<AStarEntry> queue = new PriorityQueue<>();
@@ -77,16 +119,31 @@ public class SLGraph {
         return path;
     }
 
+    /**
+     *
+     * @return a String representation of the graph.
+     */
     public String toString(){
         return graph.toString();
     }
 
+    /**
+     * Inner class used to give Departures (nodes) a priority and keeping track of the path taken for the journey being evaluated.
+     * Only used during A* search in findRoute().
+     */
     private class AStarEntry implements Comparable<AStarEntry>{
 
         int priorityCost, costSoFar;
         Departure departure;
         AStarEntry path;
 
+        /**
+         * Construct a new AStarEntry.
+         * @param priorityCost by the A* heuristic.
+         * @param departure edge between two Stops.
+         * @param path reference to previous AStarEntry for the current journey.
+         * @param costSoFar total cost for this path.
+         */
         public AStarEntry(int priorityCost, Departure departure, AStarEntry path, int costSoFar){
             this.priorityCost = priorityCost;
             this.costSoFar = costSoFar;
@@ -100,8 +157,5 @@ public class SLGraph {
         public String toString(){
             return departure.getNext().toString();
         }
-    }
-    public Stop getStop(String stop){
-        return graph.get(stop);
     }
 }
