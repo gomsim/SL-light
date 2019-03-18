@@ -5,11 +5,14 @@
 
 public class Departure {
 
+    /**
+     * Enum type representing the different modes of transportation and their
+     * relative speed(time/distance).
+     */
     public enum TransportType {
         TUBE(1),
         BUS(3),
-        TRAM(2),
-        TEST(0.5);
+        TRAM(2);
 
         double speed;
 
@@ -31,6 +34,12 @@ public class Departure {
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
     }
+    public void setDepTime(int time){
+        departureTime = time;
+    }
+    public void setArrTime(int time){
+        arrivalTime = time;
+    }
     public int getArrivalTime(){
         return arrivalTime;
     }
@@ -51,8 +60,5 @@ public class Departure {
     }
     public Stop getFrom(){
         return from;
-    }
-    public String toString(){
-        return line + ":" + departureTime/60 + ":" + (departureTime%60 < 10? "0"+departureTime%60: departureTime%60) + "->" + next;
     }
 }

@@ -6,6 +6,7 @@ import java.util.TreeMap;
  */
 
 public class Stop {
+
     private String name;
     private double x,y;
     private TreeMap<Integer, Departure> departures = new TreeMap<>();
@@ -14,10 +15,6 @@ public class Stop {
         this.name = name;
         this.x = x;
         this.y = y;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public double getX() {
@@ -42,33 +39,33 @@ public class Stop {
         return otherStop.name.equals(name);
     }
 
-    public boolean addDeparture(int departTime, Departure d) {
-        if (departures.containsValue(d)) //ANVÄNDER JAVAS STANDARD-equals och hashcode
-            return false;
-        if (departures.containsKey(departTime))
+    /**
+     * Adds a new departure from this stop. Departures are held in a TreeMap.
+     * @param departTime serves as key in the TreeMap.
+     * @param d is the departure object (edge).
+     */
+    public void addDeparture(int departTime, Departure d) {
+        if (departures.containsKey(departTime)){
             departTime++;
+            d.setDepTime(d.getDepartureTime()+1);
+            d.setArrTime(d.getArrivalTime()+1);
+        }
         departures.put(departTime,d);
-        return true;
     }
-    public boolean removeDeparture(String destination, int departTime){
+
+    /**
+     * Removes departrue(edge) from this stop.
+     * @param departTime is used as key to get desired departure from TreeMap.
+     * @return true if the departure existed beforehand.
+     */
+    public boolean removeDeparture(int departTime){
         if (!departures.containsKey(departTime))
             return false;
         departures.remove(departTime);
         return true;
     }
-    public Departure getNextDeparture(int arrivalTime){
-        return departures.ceilingEntry(arrivalTime).getValue();
-    }
 
     public String toString(){
         return name;
-    }
-
-    //FOR TESTING
-    public void printDepartures(){
-        for (Departure d : departures.values()){
-            if(d.getNext().toString().equals("T4"))
-                System.out.print(d.getFrom() + ": " + d.getDepartureTime() + " to " + d.getNext() + ": " + d.getArrivalTime() + "\n");
-        }
     }
 }

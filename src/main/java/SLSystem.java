@@ -8,48 +8,18 @@ import java.util.Scanner;
  */
 
 public class SLSystem {
-
     private SLGraph graph = new SLGraph();
+
     private Scanner s;
     public static void main(String[] args){
         (new SLSystem()).run();
     }
 
-    public void run(){
-        s = new Scanner(System.in);
-        init();
-        boolean quit = false;
-        while(!quit){
-            switch(readInt("Välkommen till SL! Vad vill du göra \n1. Sök resa \n2. Avsluta")){
-                case 1:
-                    String start = readString("Vart ifrån åker du? ");
-                    String stop = readString("Vart vill du åka? ");
-                    int h = readInt("När vill du åka? \n timme: ");
-                    int m = readInt("minut: ");
-                    printPath(graph.findRoute(start, stop, formatTime(h,m)));
-                    break;
-                case 2:
-                    quit = true;
-                    break;
-            }
-        }
-    }
-    private int readInt(String m){
-        System.out.print(m);
-        int a = s.nextInt();
-        s.nextLine();
-        return a;
-    }
-    private String readString(String m){
-        System.out.println(m);
-        return s.nextLine().toUpperCase();
-    }
-    private String formatTime(int time){
-        return time/60 + ":" + (time%60 < 10? "0"+time%60: time%60);
-    }
-    private int formatTime(int h, int m){
-        return h*60+m;
-    }
+    /**
+     * Method intializing the SLGraph-class with hard coded nodes and edges to
+     * simulate a metropolitan area with tree public transport lines with
+     * departures around the clock: one bus line, one tram and one tube.
+     */
     private void init(){
         //Add Blue TUBE-stops
         graph.addStop("T1", 0, 11);
@@ -299,6 +269,76 @@ public class SLSystem {
             i = i+15;
         }
     }
+
+    /**
+     * Method containing the programme session's main loop giving the user the
+     * choice to search for a route or exit.
+     */
+    public void run(){
+        s = new Scanner(System.in);
+        init();
+        boolean quit = false;
+        while(!quit){
+            switch(readInt("Välkommen till SL! Vad vill du göra \n1. Sök resa \n2. Avsluta")){
+                case 1:
+                    String start = readString("Vart ifrån åker du? ");
+                    String stop = readString("Vart vill du åka? ");
+                    int h = readInt("När vill du åka? \n timme: ");
+                    int m = readInt("minut: ");
+                    printPath(graph.findRoute(start, stop, formatTime(h,m)));
+                    break;
+                case 2:
+                    quit = true;
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Help method for taking numerical input.
+     * @param message to be shown to user before input.
+     * @return the user input as an int.
+     */
+    private int readInt(String message){
+        System.out.print(message);
+        int a = s.nextInt();
+        s.nextLine();
+        return a;
+    }
+
+    /**
+     * Help method for taking text input.
+     * @param message to be shown to user before input.
+     * @return the user input as a String.
+     */
+    private String readString(String message){
+        System.out.println(message);
+        return s.nextLine().toUpperCase();
+    }
+
+    /**
+     * Formats time from minutes-from-midnight to HH:MM,
+     * @param time in minutes from midnight.
+     * @return String in format HH:MM.
+     */
+    private String formatTime(int time){
+        return time/60 + ":" + (time%60 < 10? "0"+time%60: time%60);
+    }
+    /**
+     * Formats time from HH and MM to minutes-from-midnight.
+     * @param h is hours from midnight.
+     * @param m is minutes from last whole hour.
+     * @return int representing minutes from midnight.
+     */
+    private int formatTime(int h, int m){
+        return h*60+m;
+    }
+
+    /**
+     * Prints out the resulting route list given from SLGraph.findRoute() in an
+     * easy to read format.
+     * @param path is the LinkedList containting the route.
+     */
     private void printPath(LinkedList<Departure> path){
         String currentLine = "";
         System.out.print(formatTime(path.get(1).getDepartureTime()) + " >> " +
@@ -315,7 +355,6 @@ public class SLSystem {
                 System.out.print(currentLine + "\n " + formatTime(d.getDepartureTime()) + " " + d.getFrom() + "\n");
             }
             System.out.print(" " + formatTime(d.getArrivalTime()) + " " + d.getNext() + "\n");
-
         }
     }
 }
