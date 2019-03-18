@@ -1,13 +1,14 @@
 import java.util.*;
 
+/**
+ * Implementation of graph system capable of finding shortest route using A*.
+ * @author Simon Gombrii sigo8377 Joakim Ingman join9144
+ */
+
 public class SLGraph {
 
     HashMap<String, Stop> graph = new HashMap<String, Stop>();
     private static final int MAX_WAIT_TIME = 60;
-
-    public SLGraph(){
-
-    }
 
     public boolean addStop(String name, int x, int y){
         if (graph.containsKey(name))
@@ -18,26 +19,33 @@ public class SLGraph {
     public Stop remove(String name){
         return graph.remove(name);
     }
-    public boolean connect(String start, String dest, int depTime, int arrTime, String line){
+    public boolean connect(Departure.TransportType type, String start, String dest, int depTime, int arrTime, String line){
         if (!graph.containsKey(start) || !graph.containsKey(dest))
             return false;
-        return graph.get(start).addDeparture(depTime,new Departure(line,graph.get(start),graph.get(dest),depTime, arrTime));
+        return graph.get(start).addDeparture(depTime,new Departure(type, line,graph.get(start),graph.get(dest),depTime, arrTime));
     }
     public boolean disconnect(String start, String dest, int depTime){
         if (!graph.containsKey(start))
             return false;
         return graph.get(start).removeDeparture(dest, depTime);
     }
-    private int heuristic(Stop goal, Stop next){
-        return (int)Math.sqrt(Math.pow(Math.abs(goal.getX()-next.getX()),2) + Math.pow(Math.abs(goal.getY()-next.getY()),2));
+    private int heuristic(Departure dep, Stop goal, Stop next){
+        return (int)(Math.sqrt(Math.pow(Math.abs(goal.getX()-next.getX()),2) + Math.pow(Math.abs(goal.getY()-next.getY()),2)) * dep.getType().speed);
 
     }
-    public List<Departure> findRoute(String start, String dest, int time){
+
+    /**
+     *
+     * @param start
+     * @param dest
+     * @param time
+     * @return
+     */
+    public LinkedList<Departure> findRoute(String start, String dest, int time){
         PriorityQueue<AStarEntry> queue = new PriorityQueue<>();
         HashSet<Stop> visited = new HashSet<>();
-        AStarEntry current = new AStarEntry(0, new Departure("Start",null,graph.get(start),time,time), null, 0);
+        AStarEntry current = new AStarEntry(0, new Departure(null,"Start",null,graph.get(start),time,time), null, 0);
         queue.add(current);
-        //visited.add(current.departure.getNext());
 
         while (!queue.isEmpty() && !current.departure.getNext().equals(graph.get(dest))){
             do {
@@ -53,15 +61,12 @@ public class SLGraph {
                     int costSoFar = dep.getValue().getCost(dep.getKey()) +
                             (dep.getKey()-current.departure.getArrivalTime() +
                                     current.costSoFar);
-                    int priorityCost = heuristic(to,graph.get(dest)) +
+                    int priorityCost = heuristic(dep.getValue(),to,graph.get(dest)) +
                             costSoFar;
-                    System.out.print("("+priorityCost + " " + costSoFar + " to " + dep.getValue().getNext() + ") ");
                     queue.add(new AStarEntry(priorityCost,dep.getValue(), current, costSoFar));
-                    //visited.add(dep.getValue().getNext());
                 }
             }
         }
-        System.out.println();
         LinkedList<Departure> path = new LinkedList<>();
         if (visited.contains(graph.get(dest))){
             while(current != null){
@@ -95,5 +100,8 @@ public class SLGraph {
         public String toString(){
             return departure.getNext().toString();
         }
+    }
+    public Stop getStop(String stop){
+        return graph.get(stop);
     }
 }

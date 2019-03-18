@@ -1,5 +1,9 @@
-import java.util.Map;
 import java.util.TreeMap;
+
+/**
+ * Class representing stops (nodes) in SLGraph-class.
+ * @author Simon Gombrii sigo8377 Joakim Ingman join9144
+ */
 
 public class Stop {
     private String name;
@@ -39,8 +43,10 @@ public class Stop {
     }
 
     public boolean addDeparture(int departTime, Departure d) {
-        if (departures.containsValue(d))
+        if (departures.containsValue(d)) //ANVÄNDER JAVAS STANDARD-equals och hashcode
             return false;
+        if (departures.containsKey(departTime))
+            departTime++;
         departures.put(departTime,d);
         return true;
     }
@@ -58,4 +64,11 @@ public class Stop {
         return name;
     }
 
+    //FOR TESTING
+    public void printDepartures(){
+        for (Departure d : departures.values()){
+            if(d.getNext().toString().equals("T4"))
+                System.out.print(d.getFrom() + ": " + d.getDepartureTime() + " to " + d.getNext() + ": " + d.getArrivalTime() + "\n");
+        }
+    }
 }

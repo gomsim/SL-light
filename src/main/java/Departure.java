@@ -1,10 +1,30 @@
+/**
+ * Class representing departures (edges) from stops (nodes) in SLGraph-class.
+ * @author Simon Gombrii sigo8377 Joakim Ingman join9144
+ */
+
 public class Departure {
 
+    public enum TransportType {
+        TUBE(1),
+        BUS(3),
+        TRAM(2),
+        TEST(0.5);
+
+        double speed;
+
+        TransportType(double speed){
+            this.speed = speed;
+        }
+    }
+
+    private TransportType type;
     private String line;
     private Stop from, next;
     private int departureTime, arrivalTime;
 
-    public Departure(String line, Stop from, Stop next, int departureTime, int arrivalTime){
+    public Departure(TransportType type, String line, Stop from, Stop next, int departureTime, int arrivalTime){
+        this.type = type;
         this.line = line;
         this.from = from;
         this.next = next;
@@ -19,6 +39,12 @@ public class Departure {
     }
     public int getCost(int departureTime){
         return arrivalTime - departureTime;
+    }
+    public TransportType getType(){
+        return type;
+    }
+    public String getLine(){
+        return line;
     }
     public Stop getNext(){
         return next;
