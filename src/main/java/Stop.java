@@ -54,7 +54,7 @@ public class Stop {
     }
 
     /**
-     * Removes departrue(edge) from this stop.
+     * Removes departure(edge) from this stop.
      * @param departTime is used as key to get desired departure from TreeMap.
      * @return true if the departure existed beforehand.
      */

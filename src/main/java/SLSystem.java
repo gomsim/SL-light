@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 /**
- * User interface class for the public transport rute finding system.
+ * User interface class for the public transport route finding system.
  * @author Simon Gombrii sigo8377 Joakim Ingman join9144
  */
 
@@ -16,7 +16,7 @@ public class SLSystem {
     }
 
     /**
-     * Method intializing the SLGraph-class with hard coded nodes and edges to
+     * Method initializing the SLGraph-class with hard coded nodes and edges to
      * simulate a metropolitan area with tree public transport lines with
      * departures around the clock: one bus line, one tram and one tube.
      */
@@ -274,7 +274,7 @@ public class SLSystem {
      * Method containing the programme session's main loop giving the user the
      * choice to search for a route or exit.
      */
-    public void run(){
+    private void run(){
         s = new Scanner(System.in);
         init();
         boolean quit = false;
@@ -337,7 +337,7 @@ public class SLSystem {
     /**
      * Prints out the resulting route list given from SLGraph.findRoute() in an
      * easy to read format.
-     * @param path is the LinkedList containting the route.
+     * @param path is the LinkedList containing the route.
      */
     private void printPath(LinkedList<Departure> path){
         String currentLine = "";

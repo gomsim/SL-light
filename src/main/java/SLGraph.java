@@ -7,7 +7,7 @@ import java.util.*;
 
 public class SLGraph {
 
-    HashMap<String, Stop> graph = new HashMap<String, Stop>();
+    private HashMap<String, Stop> graph = new HashMap<>();
     private static final int MAX_WAIT_TIME = 60;
 
     /**
@@ -39,7 +39,7 @@ public class SLGraph {
      * @param start node of the new edge.
      * @param dest-node of the new edge.
      * @param depTime from the start node.
-     * @param arrTime to the destionation node.
+     * @param arrTime to the destination node.
      * @param line name of the line this departure appears along.
      * @return true if the two Stops are connected, false if one of the Stops does not exist in the graph.
      */
@@ -56,10 +56,8 @@ public class SLGraph {
      * @param depTime of the node to be removed.
      * @return true if departure is removed, false if graph does not contain the departure.
      */
-    public boolean disconnect(String start, int depTime){
-        if (!graph.containsKey(start))
-            return false;
-        return graph.get(start).removeDeparture(depTime);
+    public boolean disconnect(String start, int depTime) {
+        return graph.containsKey(start) && graph.get(start).removeDeparture(depTime);
     }
 
     /**
