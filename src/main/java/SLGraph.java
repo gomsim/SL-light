@@ -81,21 +81,30 @@ public class SLGraph {
      * @return a LinkedList of departures detailing the journey.
      */
     public LinkedList<Departure> findRoute(String start, String dest, int time){
+        //Initiearar datastrukturer
         PriorityQueue<AStarEntry> queue = new PriorityQueue<>();
         HashSet<Stop> visited = new HashSet<>();
         AStarEntry current = new AStarEntry(0, new Departure(null,"Start",null,graph.get(start),time,time), null, 0);
         queue.add(current);
 
+        //Sök-loopen
         while (!queue.isEmpty() && !current.departure.getNext().equals(graph.get(dest))){
+
+            //Plockar fram nästa icke-besökta nod
             do {
                 current = queue.poll();
             }while (visited.contains(current.departure.getNext()));
             visited.add(current.departure.getNext());
             System.out.println("\nAt: " + current);
+
+            //Söker genom lista av framtida avgångar för noden
             for (Map.Entry<Integer,Departure> dep: current.departure.getNext().getDepartures().tailMap(current.departure.getArrivalTime()).entrySet()){
                 Stop to = dep.getValue().getNext();
+                //Om för lång väntetid
                 if (dep.getKey() - current.departure.getArrivalTime() > MAX_WAIT_TIME)
                     break;
+
+                //Kalkylerar kostnad för avgång och lägger till i kön
                 if (!visited.contains(to)) {
                     int costSoFar = dep.getValue().getCost(dep.getKey()) +
                             (dep.getKey()-current.departure.getArrivalTime() +
@@ -106,6 +115,7 @@ public class SLGraph {
                 }
             }
         }
+        //Samanställer rutten
         LinkedList<Departure> path = new LinkedList<>();
         if (visited.contains(graph.get(dest))){
             while(current != null){
